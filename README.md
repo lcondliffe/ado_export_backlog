@@ -18,17 +18,19 @@ This script exports all open features, user stories, and tasks from an Azure Dev
 
 ## Usage
 
-1.  Set the following environment variables:
-
-    - `ADO_ORGANIZATION`: Your Azure DevOps organization name.
-    - `ADO_PROJECT`: Your Azure DevOps project name.
-    - `ADO_PAT`: Your Azure DevOps Personal Access Token.
-    - `ADO_AREA_PATH`: The area path to filter by (e.g., "MyProject\MyTeam").
-
-2.  Run the script:
+1.  Set the `ADO_PAT` environment variable:
 
     ```bash
-    python ado_export.py
+    export ADO_PAT="your_personal_access_token"
+    ```
+
+2.  Run the script with the following command-line arguments:
+
+    ```bash
+    python ado_export.py \
+        --organization "Your-Azure-DevOps-Organization" \
+        --project "Your-Azure-DevOps-Project" \
+        --area-path "Your-Area-Path"
     ```
 
 3.  The exported data will be saved in the `output` directory in the following files:
@@ -36,4 +38,3 @@ This script exports all open features, user stories, and tasks from an Azure Dev
     - `features.json`
     - `user_stories.json`
     - `tasks.json`
-

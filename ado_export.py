@@ -1,12 +1,10 @@
 import os
 import requests
 import json
+import argparse
 
 # Configuration
-ORGANIZATION = os.environ.get("ADO_ORGANIZATION")
-PROJECT = os.environ.get("ADO_PROJECT")
 PAT = os.environ.get("ADO_PAT")
-AREA_PATH = os.environ.get("ADO_AREA_PATH") # e.g. "MyProject\\MyTeam"
 
 # API Version
 API_VERSION = "7.1-preview.2"
@@ -49,12 +47,18 @@ def main():
     """
     Main function.
     """
-    if not all([ORGANIZATION, PROJECT, PAT, AREA_PATH]):
-        print("Please set the ADO_ORGANIZATION, ADO_PROJECT, ADO_PAT, and ADO_AREA_PATH environment variables.")
+    parser = argparse.ArgumentParser(description="Export Azure DevOps work items.")
+    parser.add_argument("--organization", required=True, help="Azure DevOps organization")
+    parser.add_argument("--project", required=True, help="Azure DevOps project")
+    parser.add_argument("--area-path", required=True, help="Azure DevOps area path")
+    args = parser.parse_args()
+
+    if not PAT:
+        print("Please set the ADO_PAT environment variable.")
         return
 
     print("Fetching work item IDs...")
-    work_item_ids = get_work_item_ids(ORGANIZATION, PROJECT, PAT, AREA_PATH)
+    work_item_ids = get_work_item_ids(args.organization, args.project, PAT, args.area_path)
     print(f"Found {len(work_item_ids)} work items.")
 
     if not work_item_ids:
@@ -66,7 +70,7 @@ def main():
     batch_size = 100
     for i in range(0, len(work_item_ids), batch_size):
         batch_ids = work_item_ids[i:i + batch_size]
-        details = get_work_item_details(ORGANIZATION, PROJECT, PAT, batch_ids)
+        details = get_work_item_details(args.organization, args.project, PAT, batch_ids)
         work_item_details.extend(details)
         print(f"Fetched details for {len(work_item_details)} of {len(work_item_ids)} work items.")
 
